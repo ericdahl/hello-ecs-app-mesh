@@ -24,7 +24,8 @@ resource "aws_ecs_task_definition" "counter" {
       environment : [
         {
           "name" : "SPRING_REDIS_HOST",
-          "value" : "redis"
+          "value": "redis.apps" # direct to service-discovery DNS zone
+#          "value" : "redis" # FIXME once envoy sidecar set up
         }
       ],
       logConfiguration = {
@@ -72,6 +73,9 @@ resource "aws_ecs_service" "counter" {
   }
 
   task_definition = aws_ecs_task_definition.counter.arn
+
+  # faster deploys, but has downtime
+  deployment_minimum_healthy_percent = 0
 
   depends_on = [aws_ecs_service.redis]
 }

@@ -1,0 +1,3 @@
+- set up envoy sidecars
+    - auto-inject capability?
+    - update counter app to rely on AppMesh name rather than direct to DNS (from Service Discovery)

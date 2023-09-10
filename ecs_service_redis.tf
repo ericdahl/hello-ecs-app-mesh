@@ -48,6 +48,10 @@ resource "aws_ecs_service" "redis" {
 
   enable_execute_command = true
 
+  service_registries {
+    registry_arn = aws_service_discovery_service.redis.arn
+  }
+
   network_configuration {
 
     # for demo purposes only; no private subnets here
@@ -131,4 +135,22 @@ resource "aws_iam_role" "redis_task" {
 resource "aws_iam_role_policy_attachment" "redis_task_ecs_exec" {
   role       = aws_iam_role.redis_task.name
   policy_arn = aws_iam_policy.ecs_task_exec.arn
+}
+
+resource "aws_service_discovery_private_dns_namespace" "redis" {
+  name = "apps"
+  vpc  = aws_vpc.default.id
+}
+#
+resource "aws_service_discovery_service" "redis" {
+
+  name = "redis"
+  dns_config {
+    namespace_id = aws_service_discovery_private_dns_namespace.redis.id
+
+    dns_records {
+      ttl  = 10
+      type = "A"
+    }
+  }
 }
