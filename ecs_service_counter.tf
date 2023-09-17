@@ -21,6 +21,10 @@ resource "aws_ecs_task_definition" "counter" {
           hostPort      = 8080
         }
       ],
+#      dependsOn: {
+#        containerName = "envoy"
+#        condition = "HEALTHY"
+#      },
       environment : [
         {
           "name" : "SPRING_REDIS_HOST",
@@ -36,8 +40,49 @@ resource "aws_ecs_task_definition" "counter" {
           awslogs-stream-prefix = "counter"
         }
       }
+    },
+    {
+      cpu: 0,
+      environment: [
+        {
+          "name": "APPMESH_VIRTUAL_NODE_NAME",
+          "value": "mesh/apps/virtualNode/redis"
+        }
+      ],
+      memory: 500,
+      image: "840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.26.4.0-prod",
+      healthCheck: {
+        retries: 3,
+        command: [
+          "CMD-SHELL",
+          "curl -s http://localhost:9901/server_info | grep state | grep -q LIVE"
+        ],
+        timeout: 2,
+        interval: 5,
+        startPeriod: 10
+      },
+      essential: true,
+      links: null,
+      hostname: null,
+      extraHosts: null,
+      pseudoTerminal: null,
+      user: "1337",
+      name: "envoy"
     }
   ])
+
+  proxy_configuration {
+    container_name = "envoy"
+
+    type = "APPMESH"
+    properties = {
+      AppPorts         = 8080
+      EgressIgnoredIPs = "169.254.170.2,169.254.169.254"
+      IgnoredUID       = 1337
+      ProxyEgressPort  = 15001
+      ProxyIngressPort = 15000
+    }
+  }
 
   cpu    = 256
   memory = 512
