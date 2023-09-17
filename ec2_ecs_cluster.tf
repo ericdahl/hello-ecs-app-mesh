@@ -82,7 +82,6 @@ resource "aws_security_group_rule" "ec2_egress_all" {
   description = "allows EC2 hosts to make egress calls"
 }
 
-
 resource "aws_security_group_rule" "ec2_ingress_ssh" {
   security_group_id = aws_security_group.ec2.id
 
@@ -96,27 +95,20 @@ resource "aws_security_group_rule" "ec2_ingress_ssh" {
   description = "allows ssh from admin_cidr"
 }
 
-
-
+data "aws_iam_policy_document" "ec2_assume" {
+  statement {
+    effect = "Allow"
+    principals {
+      type = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+    actions = ["sts:AssumeRole"]
+  }
+}
 
 resource "aws_iam_role" "ec2" {
   name        = "${local.name}-instance-role"
-  #  description = "Role applied to ECS container instances - EC2 hosts - allowing them to register themselves, pull images from ECR, etc."
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-EOF
+  assume_role_policy = data.aws_iam_policy_document.ec2_assume.json
 }
 
 resource "aws_iam_policy_attachment" "ec2_ecs" {
@@ -130,7 +122,6 @@ resource "aws_iam_policy_attachment" "ec2_ssm" {
   roles      = [aws_iam_role.ec2.name]
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
-
 
 resource "aws_iam_instance_profile" "ec2" {
   name = "${aws_iam_role.ec2.name}-instance-profile"
