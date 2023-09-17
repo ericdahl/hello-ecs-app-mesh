@@ -39,7 +39,7 @@ resource "aws_launch_template" "default" {
   name = local.name
 
   iam_instance_profile {
-    name = aws_iam_instance_profile.ecs_ec2.name
+    name = aws_iam_instance_profile.ec2.name
   }
 
   image_id      = data.aws_ssm_parameter.ecs_amazon_linux_2.value
@@ -99,7 +99,7 @@ resource "aws_security_group_rule" "ec2_ingress_ssh" {
 
 
 
-resource "aws_iam_role" "ec2_role" {
+resource "aws_iam_role" "ec2" {
   name        = "${local.name}-instance-role"
   #  description = "Role applied to ECS container instances - EC2 hosts - allowing them to register themselves, pull images from ECR, etc."
 
@@ -119,13 +119,20 @@ resource "aws_iam_role" "ec2_role" {
 EOF
 }
 
-resource "aws_iam_policy_attachment" "default" {
+resource "aws_iam_policy_attachment" "ec2_ecs" {
   name       = "${aws_ecs_cluster.default.name}-ec2"
-  roles      = [aws_iam_role.ec2_role.name]
+  roles      = [aws_iam_role.ec2.name]
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 }
 
-resource "aws_iam_instance_profile" "ecs_ec2" {
-  name = "${aws_iam_role.ec2_role.name}-instance-profile"
-  role = aws_iam_role.ec2_role.name
+resource "aws_iam_policy_attachment" "ec2_ssm" {
+  name       = "${aws_ecs_cluster.default.name}-ec2"
+  roles      = [aws_iam_role.ec2.name]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+
+resource "aws_iam_instance_profile" "ec2" {
+  name = "${aws_iam_role.ec2.name}-instance-profile"
+  role = aws_iam_role.ec2.name
 }
