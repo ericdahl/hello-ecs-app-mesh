@@ -28,8 +28,49 @@ resource "aws_ecs_task_definition" "redis" {
           awslogs-stream-prefix = "redis"
         }
       }
+    },
+    {
+      cpu: 0,
+      environment: [
+        {
+          "name": "APPMESH_VIRTUAL_NODE_NAME",
+          "value": "mesh/apps/virtualNode/redis"
+        }
+      ],
+      memory: 500,
+      image: "840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.26.4.0-prod",
+      healthCheck: {
+        retries: 3,
+        command: [
+          "CMD-SHELL",
+          "curl -s http://localhost:9901/server_info | grep state | grep -q LIVE"
+        ],
+        timeout: 10,
+        interval: 5,
+        startPeriod: 10
+      },
+      essential: true,
+      links: null,
+      hostname: null,
+      extraHosts: null,
+      pseudoTerminal: null,
+      user: "1337",
+      name: "envoy"
     }
   ])
+
+  proxy_configuration {
+    container_name = "envoy"
+
+    type = "APPMESH"
+    properties = {
+      AppPorts         = 8080
+      EgressIgnoredIPs = "169.254.170.2,169.254.169.254"
+      IgnoredUID       = 1337
+      ProxyEgressPort  = 15001
+      ProxyIngressPort = 15000
+    }
+  }
 
   cpu    = 256
   memory = 512
@@ -59,13 +100,17 @@ resource "aws_ecs_service" "redis" {
 #    assign_public_ip = true
 
     subnets = [
-      aws_subnet.public.id
+      aws_subnet.private.id
+#      aws_subnet.public.id # fargate
     ]
 
     security_groups = [
       aws_security_group.redis.id
     ]
   }
+
+  # faster deploys, but has downtime
+  deployment_minimum_healthy_percent = 0
 
   task_definition = aws_ecs_task_definition.redis.arn
 }
@@ -135,6 +180,11 @@ resource "aws_iam_role" "redis_task" {
 resource "aws_iam_role_policy_attachment" "redis_task_ecs_exec" {
   role       = aws_iam_role.redis_task.name
   policy_arn = aws_iam_policy.ecs_task_exec.arn
+}
+
+resource "aws_iam_role_policy_attachment" "redis_task_envoy" {
+  role       = aws_iam_role.redis_task.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSAppMeshEnvoyAccess"
 }
 
 resource "aws_service_discovery_private_dns_namespace" "redis" {

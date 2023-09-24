@@ -17,6 +17,14 @@ locals {
 
 resource "aws_appmesh_mesh" "default" {
   name = "apps"
+
+  spec {
+    # TODO: try removing this?
+    egress_filter {
+      type = "ALLOW_ALL"
+    }
+  }
+
 }
 
 #resource "aws_appmesh_virtual_gateway" "default" {
@@ -24,20 +32,6 @@ resource "aws_appmesh_mesh" "default" {
 #  name      = local.name
 #}
 
-resource "aws_appmesh_virtual_router" "redis" {
-  mesh_name = aws_appmesh_mesh.default.name
-  name      = "redis"
-
-  spec {
-    listener {
-      port_mapping {
-        port     = 6379
-        protocol = "tcp"
-      }
-    }
-
-  }
-}
 
 resource "aws_appmesh_virtual_service" "counter" {
   mesh_name = aws_appmesh_mesh.default.name
@@ -45,43 +39,5 @@ resource "aws_appmesh_virtual_service" "counter" {
 
   spec {
 
-  }
-}
-
-resource "aws_appmesh_virtual_node" "redis" {
-  mesh_name = aws_appmesh_mesh.default.name
-  name      = "redis"
-
-  spec {
-    listener {
-      port_mapping {
-        port     = 6379
-        protocol = "tcp"
-      }
-    }
-
-    service_discovery {
-      dns {
-        hostname = "redis.apps"
-      }
-    }
-  }
-}
-
-resource "aws_appmesh_route" "redis" {
-  mesh_name            = aws_appmesh_mesh.default.name
-  name                 = "redis"
-  virtual_router_name = aws_appmesh_virtual_router.redis.name
-
-  spec {
-
-    tcp_route {
-      action {
-        weighted_target {
-          virtual_node = aws_appmesh_virtual_node.redis.name
-          weight       = 100
-        }
-      }
-    }
   }
 }

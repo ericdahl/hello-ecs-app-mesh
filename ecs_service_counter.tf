@@ -46,7 +46,7 @@ resource "aws_ecs_task_definition" "counter" {
       environment: [
         {
           "name": "APPMESH_VIRTUAL_NODE_NAME",
-          "value": "mesh/apps/virtualNode/redis"
+          "value": "mesh/apps/virtualNode/counter"
         }
       ],
       memory: 500,
@@ -57,7 +57,7 @@ resource "aws_ecs_task_definition" "counter" {
           "CMD-SHELL",
           "curl -s http://localhost:9901/server_info | grep state | grep -q LIVE"
         ],
-        timeout: 2,
+        timeout: 10,
         interval: 5,
         startPeriod: 10
       },
@@ -109,7 +109,8 @@ resource "aws_ecs_service" "counter" {
 #    assign_public_ip = true
 
     subnets = [
-      aws_subnet.public.id
+      aws_subnet.private.id
+      #      aws_subnet.public.id # fargate
     ]
 
     security_groups = [
@@ -192,6 +193,12 @@ resource "aws_iam_role_policy_attachment" "counter_task_execution" {
   role       = aws_iam_role.counter_task_execution.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
+
+resource "aws_iam_role_policy_attachment" "counter_task_envoy" {
+  role       = aws_iam_role.counter_task.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSAppMeshEnvoyAccess"
+}
+
 #
 #data "aws_network_interface" "counter" {
 #  for_each = toset(data.aws_network_interfaces.counter.ids)
