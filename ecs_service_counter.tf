@@ -199,6 +199,19 @@ resource "aws_iam_role_policy_attachment" "counter_task_envoy" {
   policy_arn = "arn:aws:iam::aws:policy/AWSAppMeshEnvoyAccess"
 }
 
+resource "aws_service_discovery_service" "counter" {
+
+  name = "counter"
+  dns_config {
+    namespace_id = aws_service_discovery_private_dns_namespace.apps.id
+
+    dns_records {
+      ttl  = 10
+      type = "A"
+    }
+  }
+}
+
 #
 #data "aws_network_interface" "counter" {
 #  for_each = toset(data.aws_network_interfaces.counter.ids)

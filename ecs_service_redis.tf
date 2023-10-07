@@ -187,16 +187,12 @@ resource "aws_iam_role_policy_attachment" "redis_task_envoy" {
   policy_arn = "arn:aws:iam::aws:policy/AWSAppMeshEnvoyAccess"
 }
 
-resource "aws_service_discovery_private_dns_namespace" "redis" {
-  name = "apps"
-  vpc  = aws_vpc.default.id
-}
 #
 resource "aws_service_discovery_service" "redis" {
 
   name = "redis"
   dns_config {
-    namespace_id = aws_service_discovery_private_dns_namespace.redis.id
+    namespace_id = aws_service_discovery_private_dns_namespace.apps.id
 
     dns_records {
       ttl  = 10

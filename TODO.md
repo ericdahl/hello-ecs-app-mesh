@@ -1,5 +1,6 @@
 - try updating mesh to block external access - and get counter->redis communication to work
     - metrics on whether mesh is actually uses vs CloudMap DNS?
+    - use YELB bloc example?
 - Consider swapping Nat GW for AppMesh PrivateLink Endpoint
     - or just use Fargate only with public IPs?
 - docker health check needs longer timeout than 2s?
