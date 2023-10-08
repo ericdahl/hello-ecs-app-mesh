@@ -1,17 +1,4 @@
-resource "aws_appmesh_virtual_router" "redis" {
-  mesh_name = aws_appmesh_mesh.default.name
-  name      = "redis"
 
-  spec {
-    listener {
-      port_mapping {
-        port     = 6379
-        protocol = "tcp"
-      }
-    }
-
-  }
-}
 
 
 resource "aws_appmesh_virtual_node" "redis" {
@@ -34,6 +21,20 @@ resource "aws_appmesh_virtual_node" "redis" {
   }
 }
 
+
+resource "aws_appmesh_virtual_service" "redis" {
+  name      = "redis"
+  mesh_name = aws_appmesh_mesh.default.name
+
+  spec {
+    provider {
+      virtual_node {
+        virtual_node_name = aws_appmesh_virtual_node.redis.name
+      }
+    }
+  }
+}
+
 resource "aws_appmesh_route" "redis" {
   mesh_name            = aws_appmesh_mesh.default.name
   name                 = "redis"
@@ -49,5 +50,20 @@ resource "aws_appmesh_route" "redis" {
         }
       }
     }
+  }
+}
+
+resource "aws_appmesh_virtual_router" "redis" {
+  mesh_name = aws_appmesh_mesh.default.name
+  name      = "redis"
+
+  spec {
+    listener {
+      port_mapping {
+        port     = 6379
+        protocol = "tcp"
+      }
+    }
+
   }
 }

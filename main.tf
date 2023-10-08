@@ -27,20 +27,7 @@ resource "aws_appmesh_mesh" "default" {
 
 }
 
-#resource "aws_appmesh_virtual_gateway" "default" {
-#  mesh_name = aws_appmesh_mesh.default.name
-#  name      = local.name
-#}
 
-
-resource "aws_appmesh_virtual_service" "counter" {
-  mesh_name = aws_appmesh_mesh.default.name
-  name      = "counter.apps.local"
-
-  spec {
-
-  }
-}
 
 resource "aws_service_discovery_private_dns_namespace" "apps" {
   name = "apps"
