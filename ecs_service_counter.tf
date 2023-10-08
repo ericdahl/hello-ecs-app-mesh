@@ -97,7 +97,7 @@ resource "aws_ecs_service" "counter" {
   name    = "counter"
   cluster = aws_ecs_cluster.default.name
 
-  desired_count = 1
+  desired_count = 2
 
   enable_execute_command = true
 

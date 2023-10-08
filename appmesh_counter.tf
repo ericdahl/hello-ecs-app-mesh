@@ -1,5 +1,3 @@
-
-
 resource "aws_appmesh_virtual_node" "counter" {
   mesh_name = aws_appmesh_mesh.default.name
   name      = "counter"
@@ -21,6 +19,14 @@ resource "aws_appmesh_virtual_node" "counter" {
     backend {
       virtual_service {
         virtual_service_name = aws_appmesh_virtual_service.redis.name
+      }
+    }
+
+    logging {
+      access_log {
+        file {
+          path = "/dev/stdout"
+        }
       }
     }
   }
