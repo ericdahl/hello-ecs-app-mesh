@@ -28,8 +28,7 @@ resource "aws_ecs_task_definition" "counter" {
       environment : [
         {
           "name" : "SPRING_REDIS_HOST",
-          "value": "redis.apps" # direct to service-discovery DNS zone
-#          "value" : "redis" # FIXME once envoy sidecar set up
+          "value": "redis.apps"
         }
       ],
       logConfiguration = {
@@ -97,7 +96,7 @@ resource "aws_ecs_service" "counter" {
   name    = "counter"
   cluster = aws_ecs_cluster.default.name
 
-  desired_count = 2
+  desired_count = 1
 
   enable_execute_command = true
 

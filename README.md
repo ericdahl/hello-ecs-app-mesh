@@ -8,6 +8,7 @@
 
 ## TODO
 
+- fix virtual gateway - currently 503 and 111 connection error
 - access logging feature
 - add router?
 - NLB entry point for mesh?
