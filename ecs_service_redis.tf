@@ -4,10 +4,9 @@ resource "aws_ecs_task_definition" "redis" {
   requires_compatibilities = ["EC2"]
 
   execution_role_arn = aws_iam_role.redis_task_execution.arn
+  task_role_arn      = aws_iam_role.redis_task.arn
+  network_mode       = "awsvpc"
 
-  task_role_arn = aws_iam_role.redis_task.arn
-
-  network_mode = "awsvpc"
   container_definitions = jsonencode([
     {
       name  = "redis"
@@ -33,12 +32,12 @@ resource "aws_ecs_task_definition" "redis" {
       cpu : 0,
       environment : [
         {
-          "name" : "APPMESH_VIRTUAL_NODE_NAME",
-          "value" : "mesh/apps/virtualNode/redis"
+          "name" : "APPMESH_RESOURCE_ARN",
+          "value" : aws_appmesh_virtual_node.redis.arn
         }
       ],
       memory : 500,
-      image : "840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.26.4.0-prod",
+      image : "public.ecr.aws/appmesh/aws-appmesh-envoy:v1.26.4.0-prod"
       healthCheck : {
         retries : 3,
         command : [
@@ -49,11 +48,6 @@ resource "aws_ecs_task_definition" "redis" {
         interval : 5,
         startPeriod : 10
       },
-      essential : true,
-      links : null,
-      hostname : null,
-      extraHosts : null,
-      pseudoTerminal : null,
       user : "1337",
       name : "envoy"
     }
@@ -187,7 +181,6 @@ resource "aws_iam_role_policy_attachment" "redis_task_envoy" {
   policy_arn = "arn:aws:iam::aws:policy/AWSAppMeshEnvoyAccess"
 }
 
-#
 resource "aws_service_discovery_service" "redis" {
 
   name = "redis"

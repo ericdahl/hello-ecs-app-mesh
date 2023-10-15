@@ -2,10 +2,8 @@ resource "aws_ecs_task_definition" "virtual_gateway" {
   family = "virtual_gateway"
 
   requires_compatibilities = ["EC2"]
-
-  execution_role_arn = aws_iam_role.virtual_gateway_task_execution.arn
-
-  task_role_arn = aws_iam_role.virtual_gateway_task.arn
+  execution_role_arn       = aws_iam_role.virtual_gateway_task_execution.arn
+  task_role_arn            = aws_iam_role.virtual_gateway_task.arn
 
   network_mode = "awsvpc"
   container_definitions = jsonencode([
@@ -14,11 +12,19 @@ resource "aws_ecs_task_definition" "virtual_gateway" {
       environment : [
         {
           "name" : "APPMESH_RESOURCE_ARN",
-          "value" : "mesh/${aws_appmesh_mesh.default.name}/virtualGateway/${aws_appmesh_virtual_gateway.default.name}"
+          "value" : aws_appmesh_virtual_gateway.default.arn
         }
       ],
       memory : 500,
-      image : "840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.26.4.0-prod",
+      image : "public.ecr.aws/appmesh/aws-appmesh-envoy:v1.26.4.0-prod"
+      portMappings = [
+        {
+          name          = "envoy"
+          protocol      = "tcp"
+          containerPort = 8080
+          hostPort      = 8080
+        }
+      ],
       healthCheck : {
         retries : 3,
         command : [
@@ -51,6 +57,10 @@ resource "aws_ecs_service" "virtual_gateway" {
 
   enable_execute_command = true
 
+  service_registries {
+    registry_arn = aws_service_discovery_service.virtual_gateway.arn
+  }
+
   network_configuration {
 
     # for demo purposes only; no private subnets here
@@ -68,11 +78,16 @@ resource "aws_ecs_service" "virtual_gateway" {
     ]
   }
 
+  load_balancer {
+    target_group_arn = aws_lb_target_group.virtual_gateway.arn
+    container_name   = "envoy"
+    container_port   = 8080
+  }
+
   task_definition = aws_ecs_task_definition.virtual_gateway.arn
 
   # faster deploys, but has downtime
   deployment_minimum_healthy_percent = 0
-
 }
 
 resource "aws_cloudwatch_log_group" "virtual_gateway_ecs_service_connect" {
@@ -160,20 +175,3 @@ resource "aws_service_discovery_service" "virtual_gateway" {
     }
   }
 }
-
-#
-#data "aws_network_interface" "virtual_gateway" {
-#  for_each = toset(data.aws_network_interfaces.virtual_gateway.ids)
-#  id = each.key
-#}
-#
-#data "aws_network_interfaces" "virtual_gateway" {
-#  filter {
-#    name   = "group-id"
-#    values = [aws_security_group.virtual_gateway.id]
-#  }
-#}
-
-#output "virtual_gateway_eni" {
-#  value = [ for eni in data.aws_network_interface.virtual_gateway : eni.association[0].public_ip ]
-#}

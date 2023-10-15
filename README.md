@@ -8,7 +8,6 @@
 
 ## TODO
 
-- fix virtual gateway - currently 503 and 111 connection error
+- add Router
+    - maybe route to 2 different redis with weighting
 - access logging feature
-- add router?
-- NLB entry point for mesh?

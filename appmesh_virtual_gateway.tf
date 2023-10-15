@@ -28,7 +28,6 @@ resource "aws_appmesh_gateway_route" "default" {
         target {
           virtual_service {
             virtual_service_name = aws_appmesh_virtual_service.counter.name
-
           }
         }
       }

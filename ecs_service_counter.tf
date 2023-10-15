@@ -4,10 +4,9 @@ resource "aws_ecs_task_definition" "counter" {
   requires_compatibilities = ["EC2"]
 
   execution_role_arn = aws_iam_role.counter_task_execution.arn
+  task_role_arn      = aws_iam_role.counter_task.arn
+  network_mode       = "awsvpc"
 
-  task_role_arn = aws_iam_role.counter_task.arn
-
-  network_mode = "awsvpc"
   container_definitions = jsonencode([
     {
       name  = "counter"
@@ -21,10 +20,12 @@ resource "aws_ecs_task_definition" "counter" {
           hostPort      = 8080
         }
       ],
-      #      dependsOn: {
-      #        containerName = "envoy"
-      #        condition = "HEALTHY"
-      #      },
+      dependsOn = [
+        {
+          containerName = "envoy"
+          condition     = "HEALTHY"
+        }
+      ],
       environment : [
         {
           "name" : "SPRING_REDIS_HOST",
@@ -44,12 +45,12 @@ resource "aws_ecs_task_definition" "counter" {
       cpu : 0,
       environment : [
         {
-          "name" : "APPMESH_VIRTUAL_NODE_NAME",
-          "value" : "mesh/apps/virtualNode/counter"
+          "name" : "APPMESH_RESOURCE_ARN",
+          "value" : aws_appmesh_virtual_node.counter.arn
         }
       ],
       memory : 500,
-      image : "840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.26.4.0-prod",
+      image : "public.ecr.aws/appmesh/aws-appmesh-envoy:v1.26.4.0-prod"
       healthCheck : {
         retries : 3,
         command : [
