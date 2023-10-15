@@ -100,6 +100,10 @@ resource "aws_ecs_service" "counter" {
 
   enable_execute_command = true
 
+  service_registries {
+    registry_arn = aws_service_discovery_service.counter.arn
+  }
+
   network_configuration {
 
     # for demo purposes only; no private subnets here

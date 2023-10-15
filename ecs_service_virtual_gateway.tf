@@ -30,11 +30,6 @@ resource "aws_ecs_task_definition" "virtual_gateway" {
         startPeriod: 10
       },
       essential: true,
-      links: null,
-      hostname: null,
-      extraHosts: null,
-      pseudoTerminal: null,
-      user: "1337",
       name: "envoy"
     }
   ])

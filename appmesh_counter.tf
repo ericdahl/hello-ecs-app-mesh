@@ -6,7 +6,7 @@ resource "aws_appmesh_virtual_node" "counter" {
     listener {
       port_mapping {
         port     = 8080
-        protocol = "tcp"
+        protocol = "http"
       }
     }
 
