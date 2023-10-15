@@ -52,7 +52,7 @@ resource "aws_launch_template" "default" {
 
   vpc_security_group_ids = [aws_security_group.ec2.id]
 
-  user_data =base64encode(<<EOF
+  user_data = base64encode(<<EOF
 #!/bin/bash
 echo "ECS_CLUSTER=${local.name}" >> /etc/ecs/ecs.config
 EOF
@@ -99,7 +99,7 @@ data "aws_iam_policy_document" "ec2_assume" {
   statement {
     effect = "Allow"
     principals {
-      type = "Service"
+      type        = "Service"
       identifiers = ["ec2.amazonaws.com"]
     }
     actions = ["sts:AssumeRole"]
@@ -107,7 +107,7 @@ data "aws_iam_policy_document" "ec2_assume" {
 }
 
 resource "aws_iam_role" "ec2" {
-  name        = "${local.name}-instance-role"
+  name               = "${local.name}-instance-role"
   assume_role_policy = data.aws_iam_policy_document.ec2_assume.json
 }
 

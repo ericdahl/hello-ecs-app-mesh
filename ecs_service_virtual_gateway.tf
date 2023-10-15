@@ -10,27 +10,27 @@ resource "aws_ecs_task_definition" "virtual_gateway" {
   network_mode = "awsvpc"
   container_definitions = jsonencode([
     {
-      cpu: 0,
-      environment: [
+      cpu : 0,
+      environment : [
         {
-          "name": "APPMESH_RESOURCE_ARN",
-          "value": "mesh/${aws_appmesh_mesh.default.name}/virtualGateway/${aws_appmesh_virtual_gateway.default.name}"
+          "name" : "APPMESH_RESOURCE_ARN",
+          "value" : "mesh/${aws_appmesh_mesh.default.name}/virtualGateway/${aws_appmesh_virtual_gateway.default.name}"
         }
       ],
-      memory: 500,
-      image: "840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.26.4.0-prod",
-      healthCheck: {
-        retries: 3,
-        command: [
+      memory : 500,
+      image : "840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.26.4.0-prod",
+      healthCheck : {
+        retries : 3,
+        command : [
           "CMD-SHELL",
           "curl -s http://localhost:9901/server_info | grep state | grep -q LIVE"
         ],
-        timeout: 10,
-        interval: 5,
-        startPeriod: 10
+        timeout : 10,
+        interval : 5,
+        startPeriod : 10
       },
-      essential: true,
-      name: "envoy"
+      essential : true,
+      name : "envoy"
     }
   ])
 

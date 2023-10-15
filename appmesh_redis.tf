@@ -1,6 +1,3 @@
-
-
-
 resource "aws_appmesh_virtual_node" "redis" {
   mesh_name = aws_appmesh_mesh.default.name
   name      = "redis"
@@ -21,7 +18,6 @@ resource "aws_appmesh_virtual_node" "redis" {
   }
 }
 
-
 resource "aws_appmesh_virtual_service" "redis" {
   name      = "redis"
   mesh_name = aws_appmesh_mesh.default.name
@@ -36,8 +32,8 @@ resource "aws_appmesh_virtual_service" "redis" {
 }
 
 resource "aws_appmesh_route" "redis" {
-  mesh_name            = aws_appmesh_mesh.default.name
-  name                 = "redis"
+  mesh_name           = aws_appmesh_mesh.default.name
+  name                = "redis"
   virtual_router_name = aws_appmesh_virtual_router.redis.name
 
   spec {

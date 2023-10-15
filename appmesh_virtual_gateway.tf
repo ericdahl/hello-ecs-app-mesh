@@ -8,11 +8,7 @@ resource "aws_appmesh_virtual_gateway" "default" {
         port     = 8080
         protocol = "http"
       }
-
-
-
     }
-
   }
 }
 

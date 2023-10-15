@@ -21,14 +21,14 @@ resource "aws_ecs_task_definition" "counter" {
           hostPort      = 8080
         }
       ],
-#      dependsOn: {
-#        containerName = "envoy"
-#        condition = "HEALTHY"
-#      },
+      #      dependsOn: {
+      #        containerName = "envoy"
+      #        condition = "HEALTHY"
+      #      },
       environment : [
         {
           "name" : "SPRING_REDIS_HOST",
-          "value": "redis.apps"
+          "value" : "redis.apps"
         }
       ],
       logConfiguration = {
@@ -41,32 +41,32 @@ resource "aws_ecs_task_definition" "counter" {
       }
     },
     {
-      cpu: 0,
-      environment: [
+      cpu : 0,
+      environment : [
         {
-          "name": "APPMESH_VIRTUAL_NODE_NAME",
-          "value": "mesh/apps/virtualNode/counter"
+          "name" : "APPMESH_VIRTUAL_NODE_NAME",
+          "value" : "mesh/apps/virtualNode/counter"
         }
       ],
-      memory: 500,
-      image: "840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.26.4.0-prod",
-      healthCheck: {
-        retries: 3,
-        command: [
+      memory : 500,
+      image : "840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.26.4.0-prod",
+      healthCheck : {
+        retries : 3,
+        command : [
           "CMD-SHELL",
           "curl -s http://localhost:9901/server_info | grep state | grep -q LIVE"
         ],
-        timeout: 10,
-        interval: 5,
-        startPeriod: 10
+        timeout : 10,
+        interval : 5,
+        startPeriod : 10
       },
-      essential: true,
-      links: null,
-      hostname: null,
-      extraHosts: null,
-      pseudoTerminal: null,
-      user: "1337",
-      name: "envoy"
+      essential : true,
+      links : null,
+      hostname : null,
+      extraHosts : null,
+      pseudoTerminal : null,
+      user : "1337",
+      name : "envoy"
     }
   ])
 
@@ -109,7 +109,7 @@ resource "aws_ecs_service" "counter" {
     # for demo purposes only; no private subnets here
     # to save costs on NAT GW, speed up deploys, etc
     # only works for Fargate
-#    assign_public_ip = true
+    #    assign_public_ip = true
 
     subnets = [
       aws_subnet.private.id
