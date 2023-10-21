@@ -9,6 +9,13 @@ resource "aws_appmesh_virtual_gateway" "default" {
         protocol = "http"
       }
     }
+    logging {
+      access_log {
+        file {
+          path = "/dev/stdout"
+        }
+      }
+    }
   }
 }
 

@@ -59,11 +59,14 @@ resource "aws_ecs_task_definition" "counter" {
         interval : 5,
         startPeriod : 10
       },
-      essential : true,
-      links : null,
-      hostname : null,
-      extraHosts : null,
-      pseudoTerminal : null,
+      logConfiguration = {
+        logDriver = "awslogs",
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.counter_envoy.name
+          awslogs-region        = "us-east-1"
+          awslogs-stream-prefix = "counter-envoy"
+        }
+      }
       user : "1337",
       name : "envoy"
     }
@@ -88,6 +91,11 @@ resource "aws_ecs_task_definition" "counter" {
 
 resource "aws_cloudwatch_log_group" "counter" {
   name              = "/${local.name}/counter"
+  retention_in_days = 1
+}
+
+resource "aws_cloudwatch_log_group" "counter_envoy" {
+  name              = "/${local.name}/counter-envoy"
   retention_in_days = 1
 }
 
