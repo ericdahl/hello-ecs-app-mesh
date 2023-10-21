@@ -1,9 +1,9 @@
 resource "aws_autoscaling_group" "default" {
   name = local.name
 
-  min_size         = 1
-  max_size         = 1
-  desired_capacity = 1
+  min_size         = 3
+  max_size         = 3
+  desired_capacity = 3
 
   vpc_zone_identifier = [aws_subnet.public.id]
 
@@ -43,7 +43,7 @@ resource "aws_launch_template" "default" {
   }
 
   image_id      = data.aws_ssm_parameter.ecs_amazon_linux_2.value
-  instance_type = "m6a.xlarge" # supports 4 ENIs
+  instance_type = "t3a.medium" # supports 3 ENIs
   key_name      = aws_key_pair.default.key_name
 
   monitoring {

@@ -23,4 +23,8 @@ Demo app showing ECS AppMesh:
 
 - add Router
     - maybe route to 2 different redis with weighting
-- access logging feature
+        - redis.. but persisent TCP connection may hinder?
+- multiple instances
+- Spots and more nodes
+- shrink resource reservations
+- end-to-end encryption?
