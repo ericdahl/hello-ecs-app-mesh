@@ -128,11 +128,6 @@ resource "aws_ecs_service" "counter" {
   depends_on = [aws_ecs_service.redis]
 }
 
-resource "aws_cloudwatch_log_group" "counter_ecs_service_connect" {
-  name              = "/ecs/counter"
-  retention_in_days = 1
-}
-
 resource "aws_security_group" "counter" {
   name   = "counter"
   vpc_id = aws_vpc.default.id

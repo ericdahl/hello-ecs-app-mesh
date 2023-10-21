@@ -107,11 +107,6 @@ resource "aws_ecs_service" "redis" {
   task_definition = aws_ecs_task_definition.redis.arn
 }
 
-resource "aws_cloudwatch_log_group" "redis_ecs_service_connect" {
-  name              = "/ecs/redis"
-  retention_in_days = 1
-}
-
 resource "aws_security_group" "redis" {
   name   = "redis"
   vpc_id = aws_vpc.default.id

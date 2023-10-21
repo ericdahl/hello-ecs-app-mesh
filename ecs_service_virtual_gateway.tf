@@ -89,11 +89,6 @@ resource "aws_ecs_service" "virtual_gateway" {
   deployment_minimum_healthy_percent = 0
 }
 
-resource "aws_cloudwatch_log_group" "virtual_gateway_ecs_service_connect" {
-  name              = "/ecs/virtual_gateway"
-  retention_in_days = 1
-}
-
 resource "aws_security_group" "virtual_gateway" {
   name   = "virtual_gateway"
   vpc_id = aws_vpc.default.id
