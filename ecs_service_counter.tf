@@ -1,8 +1,6 @@
 resource "aws_ecs_task_definition" "counter" {
   family = "counter"
 
-  requires_compatibilities = ["EC2"]
-
   execution_role_arn = aws_iam_role.counter_task_execution.arn
   task_role_arn      = aws_iam_role.counter_task.arn
   network_mode       = "awsvpc"
