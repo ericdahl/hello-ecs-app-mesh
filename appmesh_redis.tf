@@ -24,9 +24,12 @@ resource "aws_appmesh_virtual_service" "redis" {
 
   spec {
     provider {
-      virtual_node {
-        virtual_node_name = aws_appmesh_virtual_node.redis.name
+      virtual_router {
+        virtual_router_name = aws_appmesh_virtual_router.redis.name
       }
+#      virtual_node {
+#        virtual_node_name = aws_appmesh_virtual_node.redis.name
+#      }
     }
   }
 }

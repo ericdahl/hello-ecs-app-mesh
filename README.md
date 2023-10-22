@@ -18,6 +18,9 @@ Demo app showing ECS AppMesh:
 - ECS Console does NOT support App mesh except in Classic version
   - legacy ECS Console EOL Dec 2023
   - App Mesh obsolete in favor of Service Connect?
+- Services have DNS Names / Cloud Map entries
+    - Services may be backed by Virtual Nodes OR Virtual Routers
+        - Virtual Routers then may route to multiple Virtual Nodes
 
 ## TODO
 
