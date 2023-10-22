@@ -20,8 +20,6 @@ resource "aws_appmesh_virtual_node" "counter_blue" {
       virtual_service {
         virtual_service_name = aws_appmesh_virtual_service.redis_blue.name
       }
-
-
     }
 
     logging {
@@ -29,19 +27,6 @@ resource "aws_appmesh_virtual_node" "counter_blue" {
         file {
           path = "/dev/stdout"
         }
-      }
-    }
-  }
-}
-
-resource "aws_appmesh_virtual_service" "counter_blue" {
-  name      = "counter_blue"
-  mesh_name = aws_appmesh_mesh.default.name
-
-  spec {
-    provider {
-      virtual_node {
-        virtual_node_name = aws_appmesh_virtual_node.counter_blue.name
       }
     }
   }

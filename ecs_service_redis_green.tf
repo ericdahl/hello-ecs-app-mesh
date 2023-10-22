@@ -125,18 +125,6 @@ resource "aws_security_group_rule" "redis_green_egress_all" {
   description = "allows ECS task to make egress calls"
 }
 
-resource "aws_security_group_rule" "redis_green_ingress_counter_green" {
-  security_group_id = aws_security_group.redis_green.id
-
-  type = "ingress"
-
-  from_port = 6379
-  to_port   = 6379
-  protocol  = "tcp"
-
-
-  source_security_group_id = aws_security_group.counter_green.id
-}
 
 resource "aws_security_group_rule" "redis_green_ingress_admin" {
   security_group_id = aws_security_group.redis_green.id
@@ -150,7 +138,7 @@ resource "aws_security_group_rule" "redis_green_ingress_admin" {
   cidr_blocks = [var.admin_cidr]
 }
 
-resource "aws_security_group_rule" "redis_green_ingress_counter" {
+resource "aws_security_group_rule" "redis_green_ingress_counter_green" {
   security_group_id = aws_security_group.redis_green.id
 
   type = "ingress"
@@ -159,7 +147,7 @@ resource "aws_security_group_rule" "redis_green_ingress_counter" {
   to_port   = 6379
   protocol  = "tcp"
 
-  source_security_group_id = aws_security_group.counter.id
+  source_security_group_id = aws_security_group.counter_green.id
 }
 
 resource "aws_iam_role" "redis_green_task_execution" {

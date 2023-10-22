@@ -133,7 +133,7 @@ resource "aws_ecs_service" "counter_blue" {
   # faster deploys, but has downtime
   deployment_minimum_healthy_percent = 0
 
-  depends_on = [aws_ecs_service.redis]
+  depends_on = [aws_ecs_service.redis_blue]
 }
 
 resource "aws_security_group" "counter_blue" {

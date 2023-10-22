@@ -35,9 +35,7 @@ resource "aws_appmesh_route" "counter" {
           virtual_node = aws_appmesh_virtual_node.counter_green.name
           weight       = 100
         }
-
       }
-
     }
   }
 }
