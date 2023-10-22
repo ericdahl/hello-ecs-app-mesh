@@ -24,10 +24,8 @@ Demo app showing ECS AppMesh:
 
 ## TODO
 
-- add Router
-    - maybe route to 2 different redis with weighting
-        - redis.. but persisent TCP connection may hinder?
-- multiple instances
+- use header override for match logic on counter
+- clean up security groups
 - Spots and more nodes
 - shrink resource reservations
 - end-to-end encryption?
