@@ -27,7 +27,7 @@ resource "aws_ecs_task_definition" "counter_green" {
       environment : [
         {
           "name" : "SPRING_REDIS_HOST",
-          "value" : "redis.apps"
+          "value" : "redis_green.apps"
         }
       ],
       logConfiguration = {
