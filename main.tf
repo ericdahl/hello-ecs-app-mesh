@@ -18,12 +18,12 @@ locals {
 resource "aws_appmesh_mesh" "default" {
   name = "apps"
 
-  #  spec {
-  #    # TODO: try removing this?
-  #    egress_filter {
-  #      type = "ALLOW_ALL"
-  #    }
-  #  }
+    spec {
+      # TODO: try removing this?
+      egress_filter {
+        type = "ALLOW_ALL"
+      }
+    }
 
 }
 

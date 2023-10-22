@@ -125,6 +125,19 @@ resource "aws_security_group_rule" "redis_green_egress_all" {
   description = "allows ECS task to make egress calls"
 }
 
+resource "aws_security_group_rule" "redis_green_ingress_counter_green" {
+  security_group_id = aws_security_group.redis_green.id
+
+  type = "ingress"
+
+  from_port = 6379
+  to_port   = 6379
+  protocol  = "tcp"
+
+
+  source_security_group_id = aws_security_group.counter_green.id
+}
+
 resource "aws_security_group_rule" "redis_green_ingress_admin" {
   security_group_id = aws_security_group.redis_green.id
 

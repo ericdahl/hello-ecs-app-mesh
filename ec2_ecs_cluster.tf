@@ -1,9 +1,9 @@
 resource "aws_autoscaling_group" "default" {
   name = local.name
 
-  min_size         = 3
-  max_size         = 3
-  desired_capacity = 3
+  min_size         = 5
+  max_size         = 5
+  desired_capacity = 5
 
   vpc_zone_identifier = [aws_subnet.public.id]
 

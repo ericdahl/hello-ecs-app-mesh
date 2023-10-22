@@ -1,6 +1,6 @@
-resource "aws_appmesh_virtual_node" "counter" {
+resource "aws_appmesh_virtual_node" "counter_green" {
   mesh_name = aws_appmesh_mesh.default.name
-  name      = "counter"
+  name      = "counter_green"
 
   spec {
     listener {
@@ -12,13 +12,13 @@ resource "aws_appmesh_virtual_node" "counter" {
 
     service_discovery {
       dns {
-        hostname = "counter.apps"
+        hostname = "counter_green.apps"
       }
     }
 
     backend {
       virtual_service {
-        virtual_service_name = aws_appmesh_virtual_service.redis.name
+        virtual_service_name = aws_appmesh_virtual_service.redis_green.name
       }
     }
 
@@ -32,18 +32,14 @@ resource "aws_appmesh_virtual_node" "counter" {
   }
 }
 
-resource "aws_appmesh_virtual_service" "counter" {
-  name      = "counter"
+resource "aws_appmesh_virtual_service" "counter_green" {
+  name      = "counter_green"
   mesh_name = aws_appmesh_mesh.default.name
 
   spec {
     provider {
-#      virtual_node {
-#        virtual_node_name = aws_appmesh_virtual_node.counter.name
-#      }
-
-      virtual_router {
-        virtual_router_name = aws_appmesh_virtual_router.counter.name
+      virtual_node {
+        virtual_node_name = aws_appmesh_virtual_node.counter_green.name
       }
     }
   }

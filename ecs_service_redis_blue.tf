@@ -149,6 +149,19 @@ resource "aws_security_group_rule" "redis_blue_ingress_counter" {
   source_security_group_id = aws_security_group.counter.id
 }
 
+resource "aws_security_group_rule" "redis_blue_ingress_all" {
+  security_group_id = aws_security_group.redis_blue.id
+
+  type = "ingress"
+
+  from_port = 6379
+  to_port   = 6379
+  protocol  = "tcp"
+
+  cidr_blocks = ["0.0.0.0/0"]
+#  source_security_group_id = aws_security_group.counter.id
+}
+
 resource "aws_iam_role" "redis_blue_task_execution" {
   name               = "redis_blue-task-execution"
   assume_role_policy = data.aws_iam_policy_document.role_assume_ecs_tasks.json
