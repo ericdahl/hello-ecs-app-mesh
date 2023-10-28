@@ -17,17 +17,7 @@ locals {
 
 resource "aws_appmesh_mesh" "default" {
   name = "apps"
-
-  #    spec {
-  #      # TODO: try removing this?
-  #      egress_filter {
-  #        type = "ALLOW_ALL"
-  #      }
-  #    }
-
 }
-
-
 
 resource "aws_service_discovery_private_dns_namespace" "apps" {
   name = "apps"

@@ -131,6 +131,7 @@ resource "aws_security_group_rule" "redis_green_ingress_admin" {
   protocol  = "-1"
 
   cidr_blocks = [var.admin_cidr]
+  description = "allows ingress from admin cidr"
 }
 
 resource "aws_security_group_rule" "redis_green_ingress_counter_green" {

@@ -160,19 +160,6 @@ resource "aws_security_group_rule" "counter_blue_ingress_admin" {
   cidr_blocks = [var.admin_cidr]
 }
 
-# for testing
-resource "aws_security_group_rule" "counter_blue_ingress_vpc" {
-  security_group_id = aws_security_group.counter_blue.id
-
-  type = "ingress"
-
-  from_port = 0
-  to_port   = 0
-  protocol  = "-1"
-
-  cidr_blocks = [aws_vpc.default.cidr_block]
-}
-
 resource "aws_iam_role" "counter_blue_task_execution" {
   name               = "counter_blue-task-execution"
   assume_role_policy = data.aws_iam_policy_document.role_assume_ecs_tasks.json

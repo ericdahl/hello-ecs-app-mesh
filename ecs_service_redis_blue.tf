@@ -130,6 +130,7 @@ resource "aws_security_group_rule" "redis_blue_ingress_admin" {
   protocol  = "-1"
 
   cidr_blocks = [var.admin_cidr]
+  description = "allows ingress from admin cidr"
 }
 
 resource "aws_security_group_rule" "redis_blue_ingress_counter_blue" {
@@ -142,19 +143,6 @@ resource "aws_security_group_rule" "redis_blue_ingress_counter_blue" {
   protocol  = "tcp"
 
   source_security_group_id = aws_security_group.counter_blue.id
-}
-
-resource "aws_security_group_rule" "redis_blue_ingress_all" {
-  security_group_id = aws_security_group.redis_blue.id
-
-  type = "ingress"
-
-  from_port = 6379
-  to_port   = 6379
-  protocol  = "tcp"
-
-  cidr_blocks = ["0.0.0.0/0"]
-  #  source_security_group_id = aws_security_group.counter.id
 }
 
 resource "aws_iam_role" "redis_blue_task_execution" {
