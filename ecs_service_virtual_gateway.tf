@@ -70,14 +70,8 @@ resource "aws_ecs_service" "virtual_gateway" {
 
   network_configuration {
 
-    # for demo purposes only; no private subnets here
-    # to save costs on NAT GW, speed up deploys, etc
-    # only works for Fargate
-    #    assign_public_ip = true
-
     subnets = [
       aws_subnet.private.id
-      #      aws_subnet.public.id # fargate
     ]
 
     security_groups = [
