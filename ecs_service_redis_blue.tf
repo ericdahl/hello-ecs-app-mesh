@@ -159,7 +159,7 @@ resource "aws_security_group_rule" "redis_blue_ingress_all" {
   protocol  = "tcp"
 
   cidr_blocks = ["0.0.0.0/0"]
-#  source_security_group_id = aws_security_group.counter.id
+  #  source_security_group_id = aws_security_group.counter.id
 }
 
 resource "aws_iam_role" "redis_blue_task_execution" {

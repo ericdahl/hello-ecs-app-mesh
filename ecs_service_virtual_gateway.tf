@@ -1,8 +1,8 @@
 resource "aws_ecs_task_definition" "virtual_gateway" {
   family = "virtual_gateway"
 
-  execution_role_arn       = aws_iam_role.virtual_gateway_task_execution.arn
-  task_role_arn            = aws_iam_role.virtual_gateway_task.arn
+  execution_role_arn = aws_iam_role.virtual_gateway_task_execution.arn
+  task_role_arn      = aws_iam_role.virtual_gateway_task.arn
 
   network_mode = "awsvpc"
   container_definitions = jsonencode([

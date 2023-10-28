@@ -24,7 +24,6 @@ Demo app showing ECS AppMesh:
 
 ## TODO
 
-- use header override for match logic on counter
 - clean up security groups
 - Spots and more nodes
 - shrink resource reservations
